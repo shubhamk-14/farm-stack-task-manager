@@ -53,7 +53,7 @@ const onSubmitHandler =async(e)=>{
           <button
             type="submit"
             disabled={isSubmitting}
-            className='w-full py-3 text-center rounded bg-blue-600 text-white disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.99] transition'
+            className='w-full inline-flex items-center justify-center gap-2 py-3 px-6 rounded-lg bg-blue-600 text-white font-semibold shadow-md shadow-blue-200 border border-blue-700 disabled:opacity-60 disabled:cursor-not-allowed hover:bg-blue-700 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition'
           >
             {isSubmitting ? "Submitting..." : "Submit"}
           </button>
