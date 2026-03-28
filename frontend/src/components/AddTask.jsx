@@ -1,20 +1,24 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { toast } from 'react-toastify'
 import { axiosClient } from "../utils/axiosClient";
 import { useTaskContext } from '../context/TaskContext';
 
 const AddTask = () => {
 const {fetchAllTask} = useTaskContext()
+const [isSubmitting, setIsSubmitting] = useState(false)
 
 const onSubmitHandler =async(e)=>{
  try {
    e.preventDefault()
+   if (isSubmitting) return
   const formData = new FormData(e.target)
   const title = formData.get("title") || ""
   const desc = formData.get("desc") || ""
   if(!title || !desc){
     toast.error("Provide valid fields")
+    return
   }
+   setIsSubmitting(true)
    const response = await axiosClient.post('/create',{
     title,
     desc
@@ -23,9 +27,12 @@ const onSubmitHandler =async(e)=>{
    const data = await response.data
    await fetchAllTask()
    toast.success(data.msg);
+   e.target.reset()
   
  } catch (error) {
   toast.error(error.message)
+ } finally {
+  setIsSubmitting(false)
  }
 
 }
@@ -40,10 +47,16 @@ const onSubmitHandler =async(e)=>{
         </div>
         <div className="mb-3">
           <label htmlFor="desc">Description</label>
-          <textarea rows={4} required name='desc' id='title' placeholder='Enter Your Description' className="w-full py-3 px-4 rounded outline-none border border-gray-300" />
+          <textarea rows={4} required name='desc' id='desc' placeholder='Enter Your Description' className="w-full py-3 px-4 rounded outline-none border border-gray-300" />
         </div>
         <div className="mb-3">
-          <button type="submit" className='w-full py-3 text-center rounded bg-blue-600 text-white'>Submit</button>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className='w-full py-3 text-center rounded bg-blue-600 text-white disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.99] transition'
+          >
+            {isSubmitting ? "Submitting..." : "Submit"}
+          </button>
         </div>
       </form>
     </>
