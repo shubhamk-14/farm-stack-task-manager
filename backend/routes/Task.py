@@ -45,6 +45,17 @@ async def updateTask(id:str):
         "msg":"Task Updated"
     }
 
+@route.delete("/delete/{id}", tags=["Task"])
+async def deleteTask(id: str):
+    if not bson.ObjectId.is_valid(id):
+        raise HTTPException(400, "Id is not valid")
+    result = await taskCollection.delete_one({"_id": bson.ObjectId(id)})
+    if result.deleted_count == 0:
+        raise HTTPException(404, "Task not found")
+    return {
+        "msg": "Task Deleted"
+    }
+
 
 @route.get("/get/{id}",tags=['Todo'])
 async def getTask(id:str):
