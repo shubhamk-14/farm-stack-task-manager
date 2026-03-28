@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI
 from routes.Task import route as TaskRoute
 from fastapi.middleware.cors import CORSMiddleware
@@ -6,11 +7,15 @@ app = FastAPI(title="Task Manager")
 origins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "https://farm-stack-task-manager-opal.vercel.app",
 ]
+
+vercel_origin = os.getenv("VERCEL_ORIGIN", "").strip()
+if vercel_origin:
+    origins.append(vercel_origin)
 
 app.add_middleware(CORSMiddleware,
                    allow_origins=origins,
+                   allow_origin_regex=r"https://.*\.vercel\.app",
                    allow_credentials=True,
                     allow_methods=["*"],
                     allow_headers=["*"],
